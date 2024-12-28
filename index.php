@@ -117,8 +117,12 @@ echo <<<HTML
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LLM Browser</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.tailwindcss.com/prose"></script>
     <script>
+        tailwind.config = {
+            plugins: [
+                require('@tailwindcss/typography')
+            ]
+        }
         function toggleCollapse(element, containerId) {
             const container = document.getElementById(containerId);
             const content = container.querySelector('.full-content');
