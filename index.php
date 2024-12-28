@@ -62,22 +62,22 @@ function renderResponse($prompt, $response, $model, $datetime) {
     $formattedSummary = htmlspecialchars($summary);
     
     return <<<HTML
-    <div class="response-card">
-        <div class="response-header">
-            <span class="datetime">{$datetime}</span>
+    <div class="bg-white rounded-lg shadow-sm p-6 mb-6 transition-shadow hover:shadow-md">
+        <div class="flex justify-between mb-4">
+            <span class="text-sm text-gray-500">{$datetime}</span>
         </div>
         <details>
-            <summary>{$formattedSummary}</summary>
-            <div class="response-content">
-                <div class="metadata">
-                    <span class="model">Model: {$model}</span>
+            <summary class="cursor-pointer font-medium text-lg text-gray-900 hover:text-blue-600 outline-none">{$formattedSummary}</summary>
+            <div class="mt-6 p-6 bg-gray-50 rounded-lg">
+                <div class="mb-6">
+                    <span class="text-sm text-gray-500 font-medium px-2 py-1 bg-gray-100 rounded">Model: {$model}</span>
                 </div>
-                <div class="prompt-section">
-                    <h3>Prompt</h3>
+                <div class="mb-8">
+                    <h3 class="text-sm text-gray-700 uppercase tracking-wider font-semibold mb-4">Prompt</h3>
                     {$formattedPrompt}
                 </div>
-                <div class="response-section">
-                    <h3>Response</h3>
+                <div class="mb-8">
+                    <h3 class="text-sm text-gray-700 uppercase tracking-wider font-semibold mb-4">Response</h3>
                     {$formattedResponse}
                 </div>
             </div>
@@ -94,139 +94,12 @@ echo <<<HTML
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LLM Browser</title>
-    <style>
-        body { 
-            font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif; 
-            max-width: 800px; 
-            margin: 2rem auto; 
-            padding: 0 1rem;
-            line-height: 1.5;
-            color: #1a1a1a;
-        }
-        
-        .response-card { 
-            border: 1px solid #e5e7eb; 
-            border-radius: 0.5rem; 
-            padding: 1.5rem; 
-            margin-bottom: 1.5rem;
-            background: white;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            transition: box-shadow 0.2s ease;
-        }
-        
-        .response-card:hover {
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-        
-        .response-header { 
-            display: flex; 
-            justify-content: space-between; 
-            margin-bottom: 1rem; 
-        }
-        
-        .datetime { 
-            color: #6b7280; 
-            font-size: 0.875rem;
-        }
-        
-        details summary { 
-            cursor: pointer; 
-            font-weight: 500;
-            font-size: 1.125rem;
-            color: #111827;
-            outline: none;
-        }
-        
-        details summary:hover {
-            color: #2563eb;
-        }
-        
-        .metadata { 
-            margin-bottom: 1.5rem; 
-        }
-        
-        .metadata .model { 
-            font-size: 0.875rem;
-            color: #6b7280;
-            font-weight: 500;
-            padding: 0.25rem 0.5rem;
-            background: #f3f4f6;
-            border-radius: 0.25rem;
-            display: inline-block;
-        }
-        
-        .response-content { 
-            margin-top: 1.5rem; 
-            padding: 1.5rem; 
-            background: #f9fafb; 
-            border-radius: 0.5rem; 
-        }
-        
-        .prompt-section, .response-section { 
-            margin-bottom: 2rem; 
-        }
-        
-        .prompt-section h3, .response-section h3 {
-            margin: 0 0 1rem 0;
-            color: #374151;
-            font-size: 0.875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-weight: 600;
-        }
-        
-        .search-form {
-            margin-bottom: 3rem;
-            background: white;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        
-        .search-input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-            font-size: 1rem;
-            transition: border-color 0.2s ease;
-        }
-        
-        .search-input:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
-        }
-        
-        .search-button {
-            background-color: #2563eb;
-            color: #fff;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: background-color 0.2s ease;
-        }
-        
-        .search-button:hover {
-            background-color: #1d4ed8;
-        }
-        
-        h1 {
-            font-size: 1.875rem;
-            font-weight: 600;
-            margin-bottom: 2rem;
-            color: #111827;
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <form class="search-form" method="get">
-        <input type="text" name="q" class="search-input" placeholder="Search...">
-        <button type="submit" class="search-button">Search</button>
+<body class="font-sans max-w-4xl mx-auto my-8 px-4 text-gray-900 leading-relaxed">
+    <form class="bg-white rounded-lg shadow-sm p-6 mb-12" method="get">
+        <input type="text" name="q" class="w-full px-3 py-2 mb-4 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" placeholder="Search...">
+        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">Search</button>
     </form>
 HTML;
 
