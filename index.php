@@ -73,12 +73,32 @@ function renderResponse($prompt, $response, $model, $datetime) {
                     <span class="text-sm text-gray-500 font-medium px-2 py-1 bg-gray-100 rounded">Model: {$model}</span>
                 </div>
                 <div class="mb-8">
-                    <h3 class="text-sm text-gray-700 uppercase tracking-wider font-semibold mb-4">Prompt</h3>
-                    {$formattedPrompt}
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-sm text-gray-700 uppercase tracking-wider font-semibold">Prompt</h3>
+                        <button 
+                            onclick="toggleCollapse(this, 'prompt-{$datetime}')" 
+                            class="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                        >
+                            Collapse
+                        </button>
+                    </div>
+                    <div id="prompt-{$datetime}" class="collapsible">
+                        {$formattedPrompt}
+                    </div>
                 </div>
                 <div class="mb-8">
-                    <h3 class="text-sm text-gray-700 uppercase tracking-wider font-semibold mb-4">Response</h3>
-                    {$formattedResponse}
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-sm text-gray-700 uppercase tracking-wider font-semibold">Response</h3>
+                        <button 
+                            onclick="toggleCollapse(this, 'response-{$datetime}')" 
+                            class="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                        >
+                            Collapse
+                        </button>
+                    </div>
+                    <div id="response-{$datetime}" class="collapsible">
+                        {$formattedResponse}
+                    </div>
                 </div>
             </div>
         </details>
@@ -95,6 +115,29 @@ echo <<<HTML
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LLM Browser</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function toggleCollapse(element, containerId) {
+            const container = document.getElementById(containerId);
+            container.classList.toggle('collapsed');
+            element.textContent = container.classList.contains('collapsed') ? 'Expand' : 'Collapse';
+        }
+    </script>
+    <style>
+        .collapsible.collapsed {
+            max-height: 150px;
+            overflow: hidden;
+            position: relative;
+        }
+        .collapsible.collapsed::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: linear-gradient(to bottom, transparent, white);
+        }
+    </style>
 </head>
 <body class="font-sans max-w-4xl mx-auto my-8 px-4 text-gray-900 leading-relaxed">
     <form class="bg-white rounded-lg shadow-sm p-6 mb-12" method="get">
