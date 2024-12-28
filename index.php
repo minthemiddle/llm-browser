@@ -8,12 +8,31 @@ $dotenv->load();
 // Initialize markdown parser
 $markdownConverter = new League\CommonMark\CommonMarkConverter();
 
-// Database connection (read-only)
-// $db = new SQLite3('file:' . $_ENV['DATABASE_PATH'] . '?mode=ro', SQLITE3_OPEN_READONLY);
-$db = new SQlite3('/Users/martinbetz/Library/Application Support/io.datasette.llm/logs.db');
+// Database connection
+$db = new SQLite3($_ENV['DATABASE_PATH'], SQLITE3_OPEN_READWRITE);
+
+// Get search query
+$searchQuery = isset($_GET['q']) ? $_GET['q'] : '';
 
 // Fetch data
-$results = $db->query('SELECT prompt, response, model, datetime_utc FROM responses ORDER BY datetime_utc DESC LIMIT 60');
+if (!empty($searchQuery)) {
+    $searchTerm = $db->escapeString($searchQuery);
+    $query = "
+        SELECT r.prompt, r.response, r.model, r.datetime_utc
+        FROM responses r
+        JOIN responses_fts fts ON r.rowid = fts.rowid
+        WHERE responses_fts MATCH '$searchTerm'
+        ORDER BY r.datetime_utc DESC
+        LIMIT 60
+    ";
+} else {
+    $query = 'SELECT prompt, response, model, datetime_utc FROM responses ORDER BY datetime_utc DESC LIMIT 60';
+}
+
+$results = $db->query($query);
+if ($results === false) {
+    die("Error in query: " . $db->lastErrorMsg());
+}
 
 // UI Components
 function formatDateTime($utc) {
@@ -23,9 +42,17 @@ function formatDateTime($utc) {
 
 function renderResponse($prompt, $response, $model, $datetime) {
     global $markdownConverter;
-    $formattedPrompt = $markdownConverter->convertToHtml($prompt);
-    $formattedResponse = $markdownConverter->convertToHtml($response);
-    
+    // Highlight search terms in prompt and response
+    $highlightedPrompt = $prompt;
+    $highlightedResponse = $response;
+    if (!empty($searchQuery)) {
+        $highlightedPrompt = preg_replace('/(' . preg_quote($searchQuery, '/') . ')/i', '<mark>$1</mark>', $prompt);
+        $highlightedResponse = preg_replace('/(' . preg_quote($searchQuery, '/') . ')/i', '<mark>$1</mark>', $response);
+    }
+
+    $formattedPrompt = $markdownConverter->convertToHtml($highlightedPrompt);
+    $formattedResponse = $markdownConverter->convertToHtml($highlightedResponse);
+
     // Create plain text summary from first 50 chars of prompt
     $summary = substr($prompt, 0, 50);
     if (strlen($prompt) > 50) {
@@ -88,9 +115,33 @@ echo <<<HTML
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
+        .search-form {
+            margin-bottom: 2rem;
+        }
+        .search-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .search-button {
+            background-color: #374151;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
+
+    <form class="search-form" method="get">
+        <input type="text" name="q" class="search-input" placeholder="Search...">
+        <button type="submit" class="search-button">Search</button>
+    </form>
+
     <h1>Responses</h1>
 HTML;
 
