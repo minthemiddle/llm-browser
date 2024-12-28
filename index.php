@@ -1,11 +1,15 @@
 <?php
 require 'vendor/autoload.php';
 
+// Load environment variables
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 // Initialize markdown parser
 $markdownConverter = new League\CommonMark\CommonMarkConverter();
 
 // Database connection
-$db = new SQLite3('database.sqlite');
+$db = new SQLite3($_ENV['DATABASE_PATH']);
 
 // Fetch data
 $results = $db->query('SELECT prompt, response, model, datetime_utc FROM responses ORDER BY datetime_utc DESC LIMIT 60');
