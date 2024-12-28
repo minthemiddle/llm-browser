@@ -26,12 +26,13 @@ function renderResponse($prompt, $response, $model, $datetime) {
     $formattedPrompt = $markdownConverter->convertToHtml($prompt);
     $formattedResponse = $markdownConverter->convertToHtml($response);
     
-    // Create summary from first 50 chars of prompt
+    // Create plain text summary from first 50 chars of prompt
     $summary = substr($prompt, 0, 50);
     if (strlen($prompt) > 50) {
         $summary .= '...';
     }
-    $formattedSummary = $markdownConverter->convertToHtml($summary);
+    // Escape HTML in summary to show plain text
+    $formattedSummary = htmlspecialchars($summary);
     
     return <<<HTML
     <div class="response-card">
