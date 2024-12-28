@@ -8,8 +8,8 @@ $dotenv->load();
 // Initialize markdown parser
 $markdownConverter = new League\CommonMark\CommonMarkConverter();
 
-// Database connection
-$db = new SQLite3($_ENV['DATABASE_PATH']);
+// Database connection (read-only)
+$db = new SQLite3('file:' . $_ENV['DATABASE_PATH'] . '?mode=ro', SQLITE3_OPEN_READONLY);
 
 // Fetch data
 $results = $db->query('SELECT prompt, response, model, datetime_utc FROM responses ORDER BY datetime_utc DESC LIMIT 60');
