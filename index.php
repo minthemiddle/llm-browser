@@ -134,7 +134,7 @@ echo <<<HTML
                 const lines = content.textContent.split('\n');
                 const firstLines = lines.slice(0, 3).join('\n');
                 const lastLines = lines.slice(-3).join('\n');
-                preview.innerHTML = `${firstLines}<br>...<br>${lastLines}`;
+                preview.innerHTML = firstLines + '<br>...<br>' + lastLines;
                 
                 content.style.display = 'none';
                 preview.style.display = 'block';
