@@ -9,7 +9,8 @@ $dotenv->load();
 $markdownConverter = new League\CommonMark\CommonMarkConverter();
 
 // Database connection (read-only)
-$db = new SQLite3('file:' . $_ENV['DATABASE_PATH'] . '?mode=ro', SQLITE3_OPEN_READONLY);
+// $db = new SQLite3('file:' . $_ENV['DATABASE_PATH'] . '?mode=ro', SQLITE3_OPEN_READONLY);
+$db = new SQlite3('/Users/martinbetz/Library/Application Support/io.datasette.llm/logs.db');
 
 // Fetch data
 $results = $db->query('SELECT prompt, response, model, datetime_utc FROM responses ORDER BY datetime_utc DESC LIMIT 60');
@@ -48,7 +49,7 @@ echo <<<HTML
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Responses Viewer</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; max-width: 800px; margin: 2rem auto; }
+        body { font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif; max-width: 800px; margin: 2rem auto; }
         .response-card { border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1rem; }
         .response-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
         .model { font-weight: 500; color: #3b82f6; }
