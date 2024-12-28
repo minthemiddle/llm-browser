@@ -1,6 +1,6 @@
 # LLM Browser
 
-A web interface for browsing and searching prompts and responses logged by the [LLM](https://llm.datasette.io/) command-line tool.
+A web interface for browsing and searching LLM prompt/response history stored in SQLite.
 
 ## Features
 
