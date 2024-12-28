@@ -37,12 +37,14 @@ function renderResponse($prompt, $response, $model, $datetime) {
     return <<<HTML
     <div class="response-card">
         <div class="response-header">
-            <span class="model">{$model}</span>
             <span class="datetime">{$datetime}</span>
         </div>
         <details>
             <summary>{$formattedSummary}</summary>
             <div class="response-content">
+                <div class="metadata">
+                    <span class="model">Model: {$model}</span>
+                </div>
                 <div class="prompt-section">
                     <h3>Prompt</h3>
                     {$formattedPrompt}
@@ -69,9 +71,14 @@ echo <<<HTML
         body { font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif; max-width: 800px; margin: 2rem auto; }
         .response-card { border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1rem; }
         .response-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
-        .model { font-weight: 500; color: #3b82f6; }
         .datetime { color: #6b7280; }
         details summary { cursor: pointer; font-weight: 500; }
+        .metadata { margin-bottom: 1rem; }
+        .metadata .model { 
+            font-size: 0.9rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
         .response-content { margin-top: 1rem; padding: 1rem; background: #f9fafb; border-radius: 0.25rem; }
         .prompt-section, .response-section { margin-bottom: 1.5rem; }
         .prompt-section h3, .response-section h3 {
