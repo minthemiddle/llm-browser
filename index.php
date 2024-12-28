@@ -62,7 +62,7 @@ function renderResponse($prompt, $response, $model, $datetime) {
     $formattedSummary = htmlspecialchars($summary);
     
     return <<<HTML
-    <div class="bg-white rounded-lg shadow-sm p-6 mb-6 transition-shadow hover:shadow-md">
+    <div class="bg-white rounded-lg shadow-sm p-6 mb-6 transition-shadow hover:shadow-md prose prose-sm max-w-none">
         <div class="flex justify-between mb-4">
             <span class="text-sm text-gray-500">{$datetime}</span>
         </div>
@@ -83,7 +83,7 @@ function renderResponse($prompt, $response, $model, $datetime) {
                         </button>
                     </div>
                     <div id="prompt-{$datetime}" class="collapsible">
-                        <div class="full-content">{$formattedPrompt}</div>
+                        <div class="full-content prose prose-sm max-w-none">{$formattedPrompt}</div>
                         <div class="collapsed-preview"></div>
                     </div>
                 </div>
@@ -98,7 +98,7 @@ function renderResponse($prompt, $response, $model, $datetime) {
                         </button>
                     </div>
                     <div id="response-{$datetime}" class="collapsible">
-                        <div class="full-content">{$formattedResponse}</div>
+                        <div class="full-content prose prose-sm max-w-none">{$formattedResponse}</div>
                         <div class="collapsed-preview"></div>
                     </div>
                 </div>
@@ -117,6 +117,7 @@ echo <<<HTML
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LLM Browser</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com/prose"></script>
     <script>
         function toggleCollapse(element, containerId) {
             const container = document.getElementById(containerId);
@@ -165,7 +166,7 @@ echo <<<HTML
         }
     </style>
 </head>
-<body class="font-sans max-w-4xl mx-auto my-8 px-4 text-gray-900 leading-relaxed">
+<body class="font-sans max-w-4xl mx-auto my-8 px-4 text-gray-900 leading-relaxed bg-gray-50">
     <form class="bg-white rounded-lg shadow-sm p-6 mb-12" method="get">
         <input type="text" name="q" class="w-full px-3 py-2 mb-4 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" placeholder="Search...">
         <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors">Search</button>
