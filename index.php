@@ -93,7 +93,7 @@ echo <<<HTML
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responses Viewer</title>
+    <title>LLM Browser</title>
     <style>
         body { 
             font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif; 
@@ -224,13 +224,10 @@ echo <<<HTML
     </style>
 </head>
 <body>
-
     <form class="search-form" method="get">
         <input type="text" name="q" class="search-input" placeholder="Search...">
         <button type="submit" class="search-button">Search</button>
     </form>
-
-    <h1>Responses</h1>
 HTML;
 
 // Display responses
