@@ -95,43 +95,131 @@ echo <<<HTML
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Responses Viewer</title>
     <style>
-        body { font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif; max-width: 800px; margin: 2rem auto; }
-        .response-card { border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 1rem; margin-bottom: 1rem; }
-        .response-header { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
-        .datetime { color: #6b7280; }
-        details summary { cursor: pointer; font-weight: 500; }
-        .metadata { margin-bottom: 1rem; }
+        body { 
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif; 
+            max-width: 800px; 
+            margin: 2rem auto; 
+            padding: 0 1rem;
+            line-height: 1.5;
+            color: #1a1a1a;
+        }
+        
+        .response-card { 
+            border: 1px solid #e5e7eb; 
+            border-radius: 0.5rem; 
+            padding: 1.5rem; 
+            margin-bottom: 1.5rem;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: box-shadow 0.2s ease;
+        }
+        
+        .response-card:hover {
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        
+        .response-header { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 1rem; 
+        }
+        
+        .datetime { 
+            color: #6b7280; 
+            font-size: 0.875rem;
+        }
+        
+        details summary { 
+            cursor: pointer; 
+            font-weight: 500;
+            font-size: 1.125rem;
+            color: #111827;
+            outline: none;
+        }
+        
+        details summary:hover {
+            color: #2563eb;
+        }
+        
+        .metadata { 
+            margin-bottom: 1.5rem; 
+        }
+        
         .metadata .model { 
-            font-size: 0.9rem;
+            font-size: 0.875rem;
             color: #6b7280;
             font-weight: 500;
+            padding: 0.25rem 0.5rem;
+            background: #f3f4f6;
+            border-radius: 0.25rem;
+            display: inline-block;
         }
-        .response-content { margin-top: 1rem; padding: 1rem; background: #f9fafb; border-radius: 0.25rem; }
-        .prompt-section, .response-section { margin-bottom: 1.5rem; }
+        
+        .response-content { 
+            margin-top: 1.5rem; 
+            padding: 1.5rem; 
+            background: #f9fafb; 
+            border-radius: 0.5rem; 
+        }
+        
+        .prompt-section, .response-section { 
+            margin-bottom: 2rem; 
+        }
+        
         .prompt-section h3, .response-section h3 {
-            margin: 0 0 0.5rem 0;
+            margin: 0 0 1rem 0;
             color: #374151;
-            font-size: 0.9rem;
+            font-size: 0.875rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            font-weight: 600;
         }
+        
         .search-form {
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
+        
         .search-input {
             width: 100%;
-            padding: 0.5rem;
+            padding: 0.75rem;
             border: 1px solid #e5e7eb;
-            border-radius: 0.25rem;
-            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
         }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+        
         .search-button {
-            background-color: #374151;
+            background-color: #2563eb;
             color: #fff;
             border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 0.25rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
             cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+        
+        .search-button:hover {
+            background-color: #1d4ed8;
+        }
+        
+        h1 {
+            font-size: 1.875rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: #111827;
         }
     </style>
 </head>
