@@ -83,7 +83,8 @@ function renderResponse($prompt, $response, $model, $datetime) {
                         </button>
                     </div>
                     <div id="prompt-{$datetime}" class="collapsible">
-                        {$formattedPrompt}
+                        <div class="full-content">{$formattedPrompt}</div>
+                        <div class="collapsed-preview"></div>
                     </div>
                 </div>
                 <div class="mb-8">
@@ -97,7 +98,8 @@ function renderResponse($prompt, $response, $model, $datetime) {
                         </button>
                     </div>
                     <div id="response-{$datetime}" class="collapsible">
-                        {$formattedResponse}
+                        <div class="full-content">{$formattedResponse}</div>
+                        <div class="collapsed-preview"></div>
                     </div>
                 </div>
             </div>
@@ -118,24 +120,48 @@ echo <<<HTML
     <script>
         function toggleCollapse(element, containerId) {
             const container = document.getElementById(containerId);
-            container.classList.toggle('collapsed');
-            element.textContent = container.classList.contains('collapsed') ? 'Expand' : 'Collapse';
+            const content = container.querySelector('.full-content');
+            const preview = container.querySelector('.collapsed-preview');
+            
+            if (container.classList.contains('collapsed')) {
+                // Expand
+                content.style.display = 'block';
+                preview.style.display = 'none';
+                element.textContent = 'Collapse';
+                container.classList.remove('collapsed');
+            } else {
+                // Collapse
+                const lines = content.textContent.split('\n');
+                const firstLines = lines.slice(0, 3).join('\n');
+                const lastLines = lines.slice(-3).join('\n');
+                preview.innerHTML = `${firstLines}<br>...<br>${lastLines}`;
+                
+                content.style.display = 'none';
+                preview.style.display = 'block';
+                element.textContent = 'Expand';
+                container.classList.add('collapsed');
+            }
         }
     </script>
     <style>
-        .collapsible.collapsed {
-            max-height: 150px;
-            overflow: hidden;
+        .collapsible {
             position: relative;
         }
-        .collapsible.collapsed::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 40px;
-            background: linear-gradient(to bottom, transparent, white);
+        .collapsible .full-content {
+            display: block;
+        }
+        .collapsible .collapsed-preview {
+            display: none;
+            background: white;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #e5e7eb;
+        }
+        .collapsible.collapsed .full-content {
+            display: none;
+        }
+        .collapsible.collapsed .collapsed-preview {
+            display: block;
         }
     </style>
 </head>
