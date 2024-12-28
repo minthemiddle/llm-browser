@@ -131,9 +131,9 @@ echo <<<HTML
                 container.classList.remove('collapsed');
             } else {
                 // Collapse
-                const lines = content.textContent.split('\n');
-                const firstLines = lines.slice(0, 3).join('\n');
-                const lastLines = lines.slice(-3).join('\n');
+                const lines = content.textContent.split('\\n');
+                const firstLines = lines.slice(0, 3).join('\\n');
+                const lastLines = lines.slice(-3).join('\\n');
                 preview.innerHTML = firstLines + '<br>...<br>' + lastLines;
                 
                 content.style.display = 'none';
