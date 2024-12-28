@@ -117,6 +117,7 @@ echo <<<HTML
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LLM Browser</title>
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script>
         function toggleCollapse(element, containerId) {
             const container = document.getElementById(containerId);
             const content = container.querySelector('.full-content');
