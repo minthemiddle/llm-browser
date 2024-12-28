@@ -26,6 +26,13 @@ function renderResponse($prompt, $response, $model, $datetime) {
     $formattedPrompt = $markdownConverter->convertToHtml($prompt);
     $formattedResponse = $markdownConverter->convertToHtml($response);
     
+    // Create summary from first 50 chars of prompt
+    $summary = substr($prompt, 0, 50);
+    if (strlen($prompt) > 50) {
+        $summary .= '...';
+    }
+    $formattedSummary = $markdownConverter->convertToHtml($summary);
+    
     return <<<HTML
     <div class="response-card">
         <div class="response-header">
@@ -33,8 +40,17 @@ function renderResponse($prompt, $response, $model, $datetime) {
             <span class="datetime">{$datetime}</span>
         </div>
         <details>
-            <summary>{$formattedPrompt}</summary>
-            <div class="response-content">{$formattedResponse}</div>
+            <summary>{$formattedSummary}</summary>
+            <div class="response-content">
+                <div class="prompt-section">
+                    <h3>Prompt</h3>
+                    {$formattedPrompt}
+                </div>
+                <div class="response-section">
+                    <h3>Response</h3>
+                    {$formattedResponse}
+                </div>
+            </div>
         </details>
     </div>
     HTML;
@@ -55,7 +71,15 @@ echo <<<HTML
         .model { font-weight: 500; color: #3b82f6; }
         .datetime { color: #6b7280; }
         details summary { cursor: pointer; font-weight: 500; }
-        .response-content { margin-top: 1rem; padding: 0.5rem; background: #f9fafb; border-radius: 0.25rem; }
+        .response-content { margin-top: 1rem; padding: 1rem; background: #f9fafb; border-radius: 0.25rem; }
+        .prompt-section, .response-section { margin-bottom: 1.5rem; }
+        .prompt-section h3, .response-section h3 {
+            margin: 0 0 0.5rem 0;
+            color: #374151;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
     </style>
 </head>
 <body>
