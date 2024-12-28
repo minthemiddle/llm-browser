@@ -1,6 +1,5 @@
 {
     "require": {
-        "erusev/parsedown": "^1.7",
         "league/commonmark": "^2.3"
     }
 }

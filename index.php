@@ -1,9 +1,8 @@
 <?php
 require 'vendor/autoload.php';
 
-// Initialize markdown parsers
-$parsedown = new Parsedown();
-$commonMarkConverter = new League\CommonMark\CommonMarkConverter();
+// Initialize markdown parser
+$markdownConverter = new League\CommonMark\CommonMarkConverter();
 
 // Database connection
 $db = new SQLite3('database.sqlite');
@@ -18,9 +17,9 @@ function formatDateTime($utc) {
 }
 
 function renderResponse($prompt, $response, $model, $datetime) {
-    global $parsedown, $commonMarkConverter;
-    $formattedPrompt = $parsedown->text($prompt);
-    $formattedResponse = $commonMarkConverter->convertToHtml($response);
+    global $markdownConverter;
+    $formattedPrompt = $markdownConverter->convertToHtml($prompt);
+    $formattedResponse = $markdownConverter->convertToHtml($response);
     
     return <<<HTML
     <div class="response-card">
