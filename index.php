@@ -61,6 +61,9 @@ function renderResponse($prompt, $response, $model, $datetime) {
     // Escape HTML in summary to show plain text
     $formattedSummary = htmlspecialchars($summary);
     
+    // Get the original markdown for copying
+    $markdownContent = htmlspecialchars($response, ENT_QUOTES);
+    
     return <<<HTML
     <div class="bg-white rounded-lg shadow-sm p-6 mb-6 transition-shadow hover:shadow-md prose prose-sm max-w-none">
         <div class="flex justify-between mb-4">
@@ -104,6 +107,13 @@ function renderResponse($prompt, $response, $model, $datetime) {
                 </div>
             </div>
         </details>
+        <button 
+            onclick="copyToClipboard(this)"
+            data-markdown="{$markdownContent}"
+            class="mt-4 px-4 py-2 text-sm text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+        >
+            Copy to clipboard
+        </button>
     </div>
     HTML;
 }
@@ -118,6 +128,27 @@ echo <<<HTML
     <title>LLM Browser</title>
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <script>
+        async function copyToClipboard(button) {
+            try {
+                const markdown = button.getAttribute('data-markdown');
+                if (!markdown) {
+                    throw new Error('No markdown content found');
+                }
+                await navigator.clipboard.writeText(markdown);
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                button.textContent = 'Failed to copy';
+                setTimeout(() => {
+                    button.textContent = 'Copy to clipboard';
+                }, 2000);
+            }
+        }
+
         function toggleCollapse(element, containerId) {
             const container = document.getElementById(containerId);
             const content = container.querySelector('.full-content');
