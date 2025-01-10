@@ -7,7 +7,7 @@ A web interface for browsing and searching LLM prompt/response history stored in
 - Browse historical LLM prompts and responses
 - Search across both prompts and responses
 - View markdown-formatted content with syntax highlighting
-- Collapsible sections for long content
+- Collapsible sections for long content (collapsed by default)
 - Responsive design with Tailwind CSS
 - Copy response markdown to clipboard with one click
 
@@ -56,8 +56,9 @@ A web interface for browsing and searching LLM prompt/response history stored in
 
 - The main page shows the most recent prompts and responses
 - Use the search bar to find specific content
-- Click "Collapse" to hide long content and show a preview
-- Click "Expand" to show the full content again
+- Long content is collapsed by default showing a preview
+- Click "Expand" to show full content
+- Click "Collapse" to return to preview view
 - Click "Copy to clipboard" to copy the response markdown for easy reuse
 
 ## Technology Stack
