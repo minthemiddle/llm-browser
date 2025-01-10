@@ -1,4 +1,5 @@
 <?php
+session_start();
 require 'vendor/autoload.php';
 
 // Load environment variables
@@ -11,6 +12,31 @@ $markdownConverter = new League\CommonMark\CommonMarkConverter();
 // Database connection
 $db = new SQLite3($_ENV['DATABASE_PATH'], SQLITE3_OPEN_READWRITE);
 
+// Generate CSRF token if not exists
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// Handle delete request
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die('Invalid CSRF token');
+    }
+    
+    $id = $_POST['id'];
+    $stmt = $db->prepare('DELETE FROM responses WHERE rowid = :id');
+    $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+    
+    if ($stmt->execute()) {
+        $_SESSION['message'] = 'Entry deleted successfully';
+    } else {
+        $_SESSION['message'] = 'Error deleting entry';
+    }
+    
+    header('Location: ' . $_SERVER['PHP_SELF']);
+    exit;
+}
+
 // Get search query
 $searchQuery = isset($_GET['q']) ? $_GET['q'] : '';
 
@@ -18,7 +44,7 @@ $searchQuery = isset($_GET['q']) ? $_GET['q'] : '';
 if (!empty($searchQuery)) {
     $searchTerm = $db->escapeString($searchQuery);
     $query = "
-        SELECT r.prompt, r.response, r.model, r.datetime_utc
+        SELECT r.rowid, r.prompt, r.response, r.model, r.datetime_utc
         FROM responses r
         JOIN responses_fts fts ON r.rowid = fts.rowid
         WHERE responses_fts MATCH '$searchTerm'
@@ -26,7 +52,7 @@ if (!empty($searchQuery)) {
         LIMIT 60
     ";
 } else {
-    $query = 'SELECT prompt, response, model, datetime_utc FROM responses ORDER BY datetime_utc DESC LIMIT 60';
+    $query = 'SELECT rowid, prompt, response, model, datetime_utc FROM responses ORDER BY datetime_utc DESC LIMIT 60';
 }
 
 $results = $db->query($query);
@@ -40,7 +66,7 @@ function formatDateTime($utc) {
     return $date->format('M j, Y g:i A');
 }
 
-function renderResponse($prompt, $response, $model, $datetime) {
+function renderResponse($prompt, $response, $model, $datetime, $rowid) {
     global $markdownConverter;
     // Highlight search terms in prompt and response
     $highlightedPrompt = $prompt;
@@ -68,6 +94,20 @@ function renderResponse($prompt, $response, $model, $datetime) {
     <div class="bg-white rounded-lg shadow-sm p-6 mb-6 transition-shadow hover:shadow-md prose prose-sm max-w-none">
         <div class="flex justify-between mb-4">
             <span class="text-sm text-gray-500">{$datetime}</span>
+            <form method="POST" onsubmit="return confirm('Are you sure you want to delete this entry?')">
+                <input type="hidden" name="csrf_token" value="{$_SESSION['csrf_token']}">
+                <input type="hidden" name="id" value="{$rowid}">
+                <button 
+                    type="submit"
+                    name="delete"
+                    class="text-red-500 hover:text-red-700 transition-colors"
+                    title="Delete entry"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </form>
         </div>
         <details>
             <summary class="cursor-pointer font-medium text-lg text-gray-900 hover:text-blue-600 outline-none">{$formattedSummary}</summary>
@@ -223,7 +263,8 @@ while ($row = $results->fetchArray(SQLITE3_ASSOC)) {
         $row['prompt'],
         $row['response'],
         $row['model'],
-        formatDateTime($row['datetime_utc'])
+        formatDateTime($row['datetime_utc']),
+        $row['rowid']
     );
 }
 

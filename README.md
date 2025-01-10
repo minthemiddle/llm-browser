@@ -10,6 +10,7 @@ A web interface for browsing and searching LLM prompt/response history stored in
 - Collapsible sections for long content (collapsed by default)
 - Responsive design with Tailwind CSS
 - Copy response markdown to clipboard with one click
+- Delete entries with confirmation dialog and CSRF protection
 
 ## Setup
 
@@ -22,7 +23,7 @@ A web interface for browsing and searching LLM prompt/response history stored in
 2. Configure LLM to log to SQLite (see [LLM Logging Documentation](https://llm.datasette.io/en/stable/logging.html)):
 
    ```bash
-   llm logs path /path/to/llm.db
+   llm logs path "/path/to/llm.db"
    ```
 
 3. Clone this repository:
@@ -41,7 +42,7 @@ A web interface for browsing and searching LLM prompt/response history stored in
 5. Create a `.env` file with your SQLite database path:
 
    ```env
-   DATABASE_PATH=/path/to/llm.db
+   DATABASE_PATH="/path/to/llm.db"
    ```
 
 6. Start the PHP built-in server:
