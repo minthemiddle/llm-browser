@@ -128,6 +128,20 @@ echo <<<HTML
     <title>LLM Browser</title>
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <script>
+        // Initialize all prompts as collapsed on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const promptContainers = document.querySelectorAll('.collapsible');
+            promptContainers.forEach(container => {
+                const content = container.querySelector('.full-content');
+                const preview = container.querySelector('.collapsed-preview');
+                const lines = content.textContent.split('\\n');
+                const firstLines = lines.slice(0, 3).join('\\n');
+                const lastLines = lines.slice(-3).join('\\n');
+                preview.innerHTML = firstLines + '<br>...<br>' + lastLines;
+                container.classList.add('collapsed');
+            });
+        });
+
         async function copyToClipboard(button) {
             try {
                 const markdown = button.getAttribute('data-markdown');
